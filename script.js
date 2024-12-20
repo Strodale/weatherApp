@@ -1,7 +1,11 @@
-const apiKey = "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}"; // Replace with your OpenWeatherMap API key
+const apiKey = "c1556e58652897316c0daf7c00b24e66"; // Replace with your OpenWeatherMap API key
 const getWeatherBtn = document.getElementById("getWeatherBtn");
 const cityInput = document.getElementById("cityInput");
 const weatherInfo = document.getElementById("weatherInfo");
+
+if (!getWeatherBtn || !cityInput || !weatherInfo) {
+  console.error("One or more HTML elements are missing.");
+}
 
 getWeatherBtn.addEventListener("click", async () => {
   const cityName = cityInput.value.trim();
@@ -12,16 +16,20 @@ getWeatherBtn.addEventListener("click", async () => {
 
   try {
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}`
+      `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&appid=${apiKey}`
     );
     if (!response.ok) {
-      throw new Error("City not found!");
+      throw new Error(`City not found: ${response.statusText}`);
     }
 
     const data = await response.json();
     displayWeather(data);
   } catch (error) {
-    alert(error.message);
+    if (error.message === "Failed to fetch") {
+      alert("Network error. Please try again later.");
+    } else {
+      alert(error.message);
+    }
   }
 });
 
